@@ -1,0 +1,21 @@
+mysql:
+  host: "127.0.0.1"
+  port: 3306
+  username: "root"
+  password: "mysql123456"
+  dbname: "music"
+  charset: "utf8mb4"
+  parseTime: true
+  loc: "Local"
+
+minio:
+  endpoint: "localhost:9000"
+  accessKeyID: "minioadmin"
+  secretAccessKey: "minioadminpassword"
+  useSSL: false
+
+redis:
+  host: "localhost"
+  port: 6379
+  password: ""
+  db: 0
