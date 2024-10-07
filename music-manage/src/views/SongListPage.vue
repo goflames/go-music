@@ -156,11 +156,7 @@ export default defineComponent({
     function exportPlaylist() {
       axios({
         method: 'get',
-<<<<<<< HEAD
         url: 'http://47.121.223.142:8888/excle',
-=======
-        url: 'http://backend:8888/excle',
->>>>>>> 345d30cb6abd0cadf933d9b1114d99c06a7baf86
         responseType: 'blob', // 设置响应类型为blob
       })
         .then((response) => {
