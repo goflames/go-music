@@ -1,6 +1,9 @@
 # 1. 使用官方的 golang 镜像作为基础镜像
 FROM golang:1.21.3 AS build
 
+# 设置 GOPROXY
+ENV GOPROXY=https://goproxy.cn,direct
+
 # 2. 设置工作目录为 /app
 WORKDIR /app
 
