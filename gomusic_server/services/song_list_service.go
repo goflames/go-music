@@ -48,3 +48,7 @@ func (s *SongListService) UpdateSongListImg(id int8, img string) common.Response
 func (s *SongListService) UpdateSongListInfo(request dto.SongListRequest) common.Response {
 	return s.songListDAO.UpdateSongListInfo(request)
 }
+
+func (s *SongListService) DeleteSongList(id int8) common.Response {
+	return s.songListDAO.DeleteSongList(id)
+}

@@ -30,6 +30,7 @@ func SongListControllerRegister(router *gin.RouterGroup) {
 	router.POST("/add", songListController.AddSongList)
 	router.POST("/img/update", songListController.SongListUpdateImg)
 	router.POST("/update", songListController.UpdateSongListInfo)
+	router.GET("/delete", songListController.DeleteSongList)
 }
 
 func (c *SongListController) GetAllSongList(ctx *gin.Context) {
@@ -99,5 +100,13 @@ func (c *SongListController) UpdateSongListInfo(ctx *gin.Context) {
 		return
 	}
 	response := c.songListService.UpdateSongListInfo(request)
+	ctx.JSON(http.StatusOK, response)
+}
+
+func (c *SongListController) DeleteSongList(ctx *gin.Context) {
+	idStr := ctx.Query("id")
+	// 将 int64 转换为 int8
+	id := utils.TransferToInt8(idStr)
+	response := c.songListService.DeleteSongList(id)
 	ctx.JSON(http.StatusOK, response)
 }

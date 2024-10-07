@@ -40,3 +40,7 @@ func (s *CommentService) UpdateCommentMsg(commentRequest dto.CommentRequest) com
 	}
 	return common.Success("点赞成功")
 }
+
+func (s *CommentService) DeleteComment(id int8) common.Response {
+	return s.commentDAO.DeleteComment(id)
+}

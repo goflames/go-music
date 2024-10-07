@@ -67,3 +67,12 @@ func (dao *SongListDAO) UpdateSongListInfo(request dto.SongListRequest) common.R
 	}
 	return common.Success("更新歌单信息成功！")
 }
+
+func (dao *SongListDAO) DeleteSongList(id int8) common.Response {
+	// 通过主键删除
+	tx := dao.db.Delete(&models.SongList{}, id)
+	if tx.Error != nil || tx.RowsAffected < 1 {
+		return common.Error("删除歌单失败！请重试！")
+	}
+	return common.Success("删除歌单成功")
+}

@@ -33,10 +33,10 @@ type MySQLConfig struct {
 }
 
 type MinioConfig struct {
-	Endpoint        string
-	AccessKeyID     string
-	SecretAccessKey string
-	UseSSL          bool
+	Endpoint     string
+	RootUser     string
+	RootPassword string
+	UseSSL       bool
 }
 
 type RedisConfig struct {
@@ -90,24 +90,33 @@ func InitDB() {
 	var err error
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatal("Failed to connect to database:", err)
+		// 添加重试逻辑
+		for i := 0; i < 10; i++ {
+			DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+			if err == nil {
+				log.Println("MySQL connection established successfully.")
+				return
+			}
+			log.Printf("Failed to connect to database: %v. Retrying in 2 seconds...", err)
+			time.Sleep(2 * time.Second)
+		}
 	}
-	log.Println("MySQL connection established successfully.")
 }
 
 // InitMinio initializes the MinIO client
 func InitMinio() {
 	// 使用从配置文件读取的 MinIO 配置
 	client, err := minio.New(AppConfig.Minio.Endpoint, &minio.Options{
-		Creds:  credentials.NewStaticV4(AppConfig.Minio.AccessKeyID, AppConfig.Minio.SecretAccessKey, ""),
+		Creds:  credentials.NewStaticV4(AppConfig.Minio.RootUser, AppConfig.Minio.RootPassword, ""),
 		Secure: AppConfig.Minio.UseSSL,
 	})
+	log.Println("MinIO Endpoint:", AppConfig.Minio.Endpoint)
 	if err != nil {
 		log.Fatalln("Failed to initialize MinIO:", err)
 	}
 
 	MinioClient = client
-	log.Println("MinIO client initialized successfully.")
+	log.Println("MinIO client initialized successfully--MinIO 客户端初始化成功！")
 }
 
 // InitRedis initializes the Redis client

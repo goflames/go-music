@@ -59,12 +59,6 @@ func (s *ConsumerService) AddUser(registryRequest *dto.ConsumerRequest) (common.
 		return common.Warning("用户名已注册"), nil
 	}
 
-	// 检查邮箱是否重复
-	duplicate, err := s.consumerDAO.CheckEmailDuplicate(registryRequest.Email)
-	if duplicate {
-		return common.Fatal("该邮箱已注册"), nil
-	}
-
 	consumer := &models.Consumer{}
 	*consumer = *registryRequest.ToConsumer()
 
@@ -83,6 +77,14 @@ func (s *ConsumerService) AddUser(registryRequest *dto.ConsumerRequest) (common.
 		return common.Error("邮箱不能为空"), err
 	}
 	consumer.Avator = "/img/avatorImages/user.jpg"
+
+	// 检查邮箱是否重复
+	if registryRequest.Email != "" {
+		duplicate, _ := s.consumerDAO.CheckEmailDuplicate(registryRequest.Email)
+		if duplicate {
+			return common.Fatal("该邮箱已注册"), nil
+		}
+	}
 
 	// 插入用户
 	create, err := s.consumerDAO.Create(consumer)

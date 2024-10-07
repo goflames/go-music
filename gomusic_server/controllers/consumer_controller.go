@@ -8,7 +8,9 @@ import (
 	"gomusic_server/models"
 	service "gomusic_server/services"
 	"gomusic_server/utils"
+	"gomusic_server/utils/logger"
 	"gorm.io/gorm"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -169,6 +171,8 @@ func (c *ConsumerController) GetAllUser(ctx *gin.Context) {
 }
 
 func (c *ConsumerController) UpdateUserAvatar(ctx *gin.Context) {
+	logger.Info(map[string]interface{}{}, "--------用户头像更新请求--------")
+	log.Print("--------用户头像更新请求--------")
 	idStr := ctx.Query("id")
 	// 将 int64 转换为 int8
 	id := utils.TransferToInt8(idStr)

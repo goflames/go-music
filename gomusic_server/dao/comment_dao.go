@@ -1,8 +1,10 @@
 package dao
 
 import (
+	"gomusic_server/common"
 	"gomusic_server/models"
 	"gorm.io/gorm"
+	"log"
 )
 
 type CommentDAO struct {
@@ -33,4 +35,14 @@ func (dao *CommentDAO) AddComment(comment models.Comment) bool {
 // UpdateComment 更新评论信息
 func (dao *CommentDAO) UpdateComment(comment *models.Comment) error {
 	return dao.db.Model(&models.Comment{}).Where("id = ?", comment.ID).Updates(comment).Error
+}
+
+func (dao *CommentDAO) DeleteComment(id int8) common.Response {
+	// 通过主键删除
+	tx := dao.db.Delete(&models.Comment{}, id)
+	if tx.Error != nil || tx.RowsAffected < 1 {
+		log.Print("删除评论失败....")
+		return common.Error("删除歌单失败！请重试！")
+	}
+	return common.Success("删除歌单成功")
 }

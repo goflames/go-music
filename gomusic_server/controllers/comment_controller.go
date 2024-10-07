@@ -26,6 +26,7 @@ func CommentControllerRegister(router *gin.RouterGroup) {
 	router.GET("/song/detail", commentController.CommentOfSongId)
 	router.POST("/add", commentController.AddComment)
 	router.POST("/like", commentController.CommentOfLike)
+	router.GET("/delete", commentController.DeleteComment)
 }
 
 func (c *CommentController) CommentOfSongListId(ctx *gin.Context) {
@@ -83,5 +84,13 @@ func (c *CommentController) CommentOfLike(ctx *gin.Context) {
 
 	// 调用 service 方法进行点赞更新
 	response := c.commentService.UpdateCommentMsg(commentRequest)
+	ctx.JSON(http.StatusOK, response)
+}
+
+func (c *CommentController) DeleteComment(ctx *gin.Context) {
+	idStr := ctx.Query("id")
+	// 将 int64 转换为 int8
+	id := utils.TransferToInt8(idStr)
+	response := c.commentService.DeleteComment(id)
 	ctx.JSON(http.StatusOK, response)
 }

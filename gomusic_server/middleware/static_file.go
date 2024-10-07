@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"gomusic_server/common"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -18,6 +19,7 @@ func StaticFileMiddleware() gin.HandlerFunc {
 		switch {
 		case strings.HasPrefix(path, "/img/"):
 			// Handle /img static files
+			log.Print("成功进入/img 静态资源映射....")
 			filePath := "./assets" + path
 			if _, err := os.Stat(filePath); os.IsNotExist(err) {
 				c.JSON(http.StatusNotFound, common.Error("文件不存在"))
@@ -30,6 +32,7 @@ func StaticFileMiddleware() gin.HandlerFunc {
 
 		case strings.HasPrefix(path, "/songSource/"):
 			// Handle /songSource static files
+			log.Print("成功进入/songSource/静态资源映射....")
 			filepathParam := strings.TrimPrefix(path, "/songSource/")
 			fullPath := filepath.Join("./assets/song", filepathParam)
 
@@ -46,6 +49,7 @@ func StaticFileMiddleware() gin.HandlerFunc {
 			return
 
 		case strings.HasPrefix(path, "/avatorImages/"):
+			log.Print("成功进入/avatorImages/静态资源映射....")
 			// Handle /avatorImages static files
 			c.File("./asset/avatorImages" + path)
 			c.Abort()

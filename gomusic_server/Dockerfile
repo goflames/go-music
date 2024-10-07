@@ -23,6 +23,8 @@ COPY --from=build /app/main .
 # 将 config/ 目录下的 config.yaml 文件复制到 /root/config 目录
 COPY --from=build /app/config/config.yaml /root/config/
 
+# 静态资源目录
+COPY ./assets ./assets
 
 # 暴露服务的端口
 EXPOSE 8888

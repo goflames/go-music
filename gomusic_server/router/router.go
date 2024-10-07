@@ -15,7 +15,7 @@ func InitRouter() *gin.Engine {
 		middleware.StaticFileMiddleware())
 
 	// 应用反向代理中间件，将 /music/ 路径的请求转发到 MinIO
-	minioURL, _ := url.Parse("http://localhost:9000")
+	minioURL, _ := url.Parse("http://minio:9000")
 	router.Use(middleware.ReverseProxyMiddleware(minioURL))
 
 	router.GET("/ping", func(c *gin.Context) {

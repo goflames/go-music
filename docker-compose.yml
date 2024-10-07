@@ -1,0 +1,94 @@
+services:
+  # 第一个前端项目 music-client
+  music-client:
+    build:
+      context: ./music-client  # 前端1代码所在目录
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"  # 将本地8080端口映射到容器的80端口
+    networks:
+      - webnet
+
+  # 第二个前端项目 music-manage
+  music-manage:
+    build:
+      context: ./music-manage  # 前端2代码所在目录
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"  # 将本地8081端口映射到容器的80端口
+    networks:
+      - webnet
+
+  # 后端服务
+  backend:
+    build:
+      context: ./gomusic_server  # 后端代码所在目录
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"  # 将本地8888端口映射到容器8888端口
+    networks:
+      - webnet
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=mysql123456
+      - DB_NAME=music
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadminpassword  
+    depends_on:
+      - redis
+      - mysql
+      - minio
+
+  # MySQL 数据库
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql123456
+      MYSQL_DATABASE: music
+    volumes:
+      - mysql_data:/var/lib/mysql  # 将 MySQL 数据持久化到 Docker 卷
+      - ./music_init.sql:/docker-entrypoint-initdb.d/dump.sql # 导入初始化 SQL 文件
+    ports:
+      - "3306:3306"
+    networks:
+      - webnet
+
+  # Redis 缓存
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - webnet
+
+  # MinIO 对象存储
+  minio:
+    image: minio/minio
+    command: server /data --console-address ":9001" --address ":9000"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadminpassword
+      USE_SSL: "false" # 添加这个环境变量
+    volumes:
+      - /home/minio/data:/data 
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - webnet
+
+networks:
+  webnet:
+
+volumes:
+  mysql_data: # 定义卷

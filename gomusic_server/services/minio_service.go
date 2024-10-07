@@ -18,6 +18,7 @@ import (
 // UploadFileWithPrefix uploads a file to MinIO with a dynamic prefix (folder structure)
 func UploadFileWithPrefix(file *multipart.FileHeader, bucketName string, prefix string) (string, error) {
 	// 打开文件
+	log.Printf("进入minio上传文件方法，路径:" + prefix)
 	src, err := file.Open()
 	if err != nil {
 		return "", fmt.Errorf("failed to open file: %v", err)
@@ -35,7 +36,25 @@ func UploadFileWithPrefix(file *multipart.FileHeader, bucketName string, prefix 
 	// 生成文件名，包括前缀（即“子目录”）
 	objectName := generateObjectName(prefix, file.Filename)
 
+	// 检查桶是否存在，如果不存在则创建
+	log.Printf("开始检查是否存在bucket....")
+	exists, err := config.MinioClient.BucketExists(context.Background(), bucketName)
+	if err != nil {
+		log.Printf("检查途中报错: %v", err)
+		return "", fmt.Errorf("failed to check if bucket exists: %v", err)
+	}
+	if !exists {
+		log.Printf("开始创建bucket " + bucketName)
+		err = config.MinioClient.MakeBucket(context.Background(), bucketName, minio.MakeBucketOptions{})
+		if err != nil {
+			log.Printf("创建桶失败报错......:")
+			return "", fmt.Errorf("failed to create bucket: %v", err)
+		}
+		log.Printf("Bucket %s created successfully", bucketName)
+	}
+
 	// 上传文件到 MinIO
+	log.Printf("开始上传至minio.....")
 	_, err = config.MinioClient.PutObject(
 		context.Background(),
 		bucketName,

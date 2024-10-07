@@ -4,6 +4,7 @@ import (
 	"gomusic_server/common"
 	"gomusic_server/models"
 	"gorm.io/gorm"
+	"log"
 )
 
 type ConsumerDAO struct {
@@ -73,8 +74,10 @@ func (dao *ConsumerDAO) GetAllUser() []models.Consumer {
 }
 
 func (dao *ConsumerDAO) UpdateUserImg(userId int8, pic string) common.Response {
+	log.Printf("进入用户头像更新数据库方法")
 	tx := dao.db.Model(&models.Consumer{}).Where("id = ?", userId).Update("avator", pic)
-	if tx.Error != nil {
+	if tx.Error != nil || tx.RowsAffected < 1 {
+		log.Print("用户头像更新失败.....")
 		return common.Error("数据库更新失败")
 	}
 	return common.SuccessWithData("更新成功", pic)

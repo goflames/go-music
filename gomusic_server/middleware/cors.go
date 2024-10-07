@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -33,7 +34,9 @@ func CORSMiddleware() gin.HandlerFunc {
 func ReverseProxyMiddleware(target *url.URL) gin.HandlerFunc {
 	proxy := httputil.NewSingleHostReverseProxy(target)
 	return func(c *gin.Context) {
+		log.Print("进入minio静态资源映射....")
 		if len(c.Request.URL.Path) > 6 && c.Request.URL.Path[:6] == "/music" {
+			log.Printf("映射路径：" + c.Request.URL.Path)
 			c.Request.URL.Scheme = target.Scheme
 			c.Request.URL.Host = target.Host
 			c.Request.Header.Set("X-Forwarded-Host", c.Request.Header.Get("Host"))
