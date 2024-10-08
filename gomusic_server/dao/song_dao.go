@@ -4,6 +4,7 @@ import (
 	"gomusic_server/common"
 	"gomusic_server/models"
 	"gorm.io/gorm"
+	"log"
 	"strings"
 )
 
@@ -44,7 +45,8 @@ func (dao *SongDAO) GetAllSongs() ([]models.Song, error) {
 
 func (dao *SongDAO) UpdateSongImg(songId int8, pic string) common.Response {
 	tx := dao.db.Model(&models.Song{}).Where("id = ?", songId).Update("pic", pic)
-	if tx.Error != nil {
+	if tx.Error != nil || tx.RowsAffected < 1 {
+		log.Print("歌曲图片更新失败....")
 		return common.Error("数据库更新歌曲图片失败")
 	}
 	return common.SuccessWithData("更新成功", pic)
