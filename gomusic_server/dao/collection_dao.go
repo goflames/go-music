@@ -14,7 +14,7 @@ func NewCollectionDAO(db *gorm.DB) *CollectionDAO {
 	return &CollectionDAO{db}
 }
 
-func (dao *CollectionDAO) GetCollectionByUserId(userId int8) ([]*models.Collection, error) {
+func (dao *CollectionDAO) GetCollectionByUserId(userId int) ([]*models.Collection, error) {
 	var collections []*models.Collection
 	tx := dao.db.Where("user_id = ?", userId).Find(&collections)
 	return collections, tx.Error

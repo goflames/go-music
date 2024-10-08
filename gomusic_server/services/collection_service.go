@@ -15,7 +15,7 @@ func NewCollectionService(db *gorm.DB) *CollectionService {
 	return &CollectionService{dao.NewCollectionDAO(db)}
 }
 
-func (s *CollectionService) GetCollectionByUserId(userId int8) ([]*models.Collection, error) {
+func (s *CollectionService) GetCollectionByUserId(userId int) ([]*models.Collection, error) {
 	collections, err := s.collectionDAO.GetCollectionByUserId(userId)
 	return collections, err
 }

@@ -46,7 +46,7 @@ func (dao *SongListDAO) AddSongList(request dto.SongListRequest) error {
 	return err
 }
 
-func (dao *SongListDAO) UpdateSongListImg(id int8, img string) common.Response {
+func (dao *SongListDAO) UpdateSongListImg(id int, img string) common.Response {
 	// 通过主键更新某个字段
 	tx := dao.db.Model(&models.SongList{}).Where("id = ?", id).Update("pic", img)
 	if tx.Error != nil {
@@ -68,7 +68,7 @@ func (dao *SongListDAO) UpdateSongListInfo(request dto.SongListRequest) common.R
 	return common.Success("更新歌单信息成功！")
 }
 
-func (dao *SongListDAO) DeleteSongList(id int8) common.Response {
+func (dao *SongListDAO) DeleteSongList(id int) common.Response {
 	// 通过主键删除
 	tx := dao.db.Delete(&models.SongList{}, id)
 	if tx.Error != nil || tx.RowsAffected < 1 {

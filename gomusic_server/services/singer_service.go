@@ -24,7 +24,7 @@ func (s *SingerService) GetAllSingers() ([]models.Singer, error) {
 	return singers, err
 }
 
-func (s *SingerService) GetSingersByGender(gender int8) ([]models.Singer, error) {
+func (s *SingerService) GetSingersByGender(gender int) ([]models.Singer, error) {
 	singers, err := s.SingerDAO.GetSingersByGender(gender)
 	if err != nil {
 		return nil, err
@@ -36,11 +36,11 @@ func (s *SingerService) UpdateSingerInfo(request dto.SingerRequest) error {
 	return s.SingerDAO.UpdateSingerInfo(request)
 }
 
-func (s *SingerService) UpdateSingerImg(singerId int8, pic string) common.Response {
+func (s *SingerService) UpdateSingerImg(singerId int, pic string) common.Response {
 	return s.SingerDAO.UpdateSingerImg(singerId, pic)
 }
 
-func (s *SingerService) DeleteSingerById(singerId int8) common.Response {
+func (s *SingerService) DeleteSingerById(singerId int) common.Response {
 	return s.SingerDAO.DeleteSingerById(singerId)
 }
 

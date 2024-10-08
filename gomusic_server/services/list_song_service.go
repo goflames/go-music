@@ -15,7 +15,7 @@ func NewListSongService(db *gorm.DB) *ListSongService {
 	return &ListSongService{dao.NewListSongDAO(db)}
 }
 
-func (s *ListSongService) GetSongsByListId(listId int8) ([]models.ListSong, error) {
+func (s *ListSongService) GetSongsByListId(listId int) ([]models.ListSong, error) {
 	listSongs, err := s.listSongDao.GetSongsByListId(listId)
 	return listSongs, err
 }
@@ -24,6 +24,6 @@ func (s *ListSongService) AddListSong(listSong models.ListSong) common.Response 
 	return s.listSongDao.AddListSong(listSong)
 }
 
-func (s *ListSongService) DeleyeBySongId(songId int8) common.Response {
+func (s *ListSongService) DeleyeBySongId(songId int) common.Response {
 	return s.listSongDao.DeleyeBySongId(songId)
 }

@@ -6,9 +6,9 @@ import (
 	"gomusic_server/common"
 	"gomusic_server/config"
 	"gomusic_server/services" // 导入服务层
-	"gomusic_server/utils"
 	"gorm.io/gorm"
 	"net/http"
+	"strconv"
 )
 
 type RankListController struct {
@@ -28,7 +28,7 @@ func RankListControllerRegister(router *gin.RouterGroup) {
 
 func (c *RankListController) RankOfSongListId(ctx *gin.Context) {
 	songListIdStr := ctx.Query("songListId")
-	songListId := utils.TransferToInt8(songListIdStr)
+	songListId, _ := strconv.Atoi(songListIdStr)
 	count, scoreSum, err := c.rankListService.RankOfSongListId(songListId)
 	if count == 0 || scoreSum == 0 {
 		ctx.JSON(http.StatusOK, common.Error("该歌单尚未获得评分"))
@@ -48,8 +48,8 @@ func (c *RankListController) GetUserRank(ctx *gin.Context) {
 	consumerIdStr := ctx.Query("consumerId")
 	songListIdStr := ctx.Query("songListId")
 
-	consumerId := utils.TransferToInt8(consumerIdStr)
-	songListId := utils.TransferToInt8(songListIdStr)
+	consumerId, _ := strconv.Atoi(consumerIdStr)
+	songListId, _ := strconv.Atoi(songListIdStr)
 	rank, err := c.rankListService.GetUserRank(consumerId, songListId)
 	if err != nil {
 		ctx.JSON(http.StatusOK, common.Error("该用户尚未评分"))

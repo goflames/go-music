@@ -15,13 +15,13 @@ func NewCommentDAO(db *gorm.DB) *CommentDAO {
 	return &CommentDAO{db}
 }
 
-func (dao *CommentDAO) CommentOfSongListId(songListId int8) ([]models.Comment, error) {
+func (dao *CommentDAO) CommentOfSongListId(songListId int) ([]models.Comment, error) {
 	var comments []models.Comment
 	err := dao.db.Where("song_list_id = ?", songListId).Find(&comments).Error
 	return comments, err
 }
 
-func (dao *CommentDAO) CommentOfSongId(songId int8) ([]models.Comment, error) {
+func (dao *CommentDAO) CommentOfSongId(songId int) ([]models.Comment, error) {
 	var comments []models.Comment
 	err := dao.db.Where("song_id = ?", songId).Find(&comments).Error
 	return comments, err
@@ -37,7 +37,7 @@ func (dao *CommentDAO) UpdateComment(comment *models.Comment) error {
 	return dao.db.Model(&models.Comment{}).Where("id = ?", comment.ID).Updates(comment).Error
 }
 
-func (dao *CommentDAO) DeleteComment(id int8) common.Response {
+func (dao *CommentDAO) DeleteComment(id int) common.Response {
 	// 通过主键删除
 	tx := dao.db.Delete(&models.Comment{}, id)
 	if tx.Error != nil || tx.RowsAffected < 1 {

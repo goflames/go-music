@@ -6,7 +6,6 @@ import (
 	"gomusic_server/config"
 	"gomusic_server/dto"
 	service "gomusic_server/services"
-	"gomusic_server/utils"
 	"gorm.io/gorm"
 	"log"
 	"net/http"
@@ -33,8 +32,8 @@ func CollectionControllerRegister(router *gin.RouterGroup) {
 
 func (c *CollectionController) GetCollectionByUserId(ctx *gin.Context) {
 	userIdStr := ctx.Query("userId")
-	// 将 int64 转换为 int8
-	userId := utils.TransferToInt8(userIdStr)
+	// 将 int64 转换为 int
+	userId, _ := strconv.Atoi(userIdStr)
 	collections, err := c.collectionService.GetCollectionByUserId(userId)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, common.Error("获取收藏歌单失败"))

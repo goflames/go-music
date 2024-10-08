@@ -6,9 +6,9 @@ import (
 	"gomusic_server/config"
 	"gomusic_server/dto"
 	service "gomusic_server/services"
-	"gomusic_server/utils"
 	"gorm.io/gorm"
 	"net/http"
+	"strconv"
 )
 
 const bucketName = "music"
@@ -75,8 +75,8 @@ func (c *SongListController) AddSongList(ctx *gin.Context) {
 
 func (c *SongListController) SongListUpdateImg(ctx *gin.Context) {
 	idStr := ctx.Query("id")
-	// 将 int64 转换为 int8
-	id := utils.TransferToInt8(idStr)
+	// 将 int64 转换为 int
+	id, _ := strconv.Atoi(idStr)
 	file, err := ctx.FormFile("file")
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": "file is required"})
@@ -105,8 +105,8 @@ func (c *SongListController) UpdateSongListInfo(ctx *gin.Context) {
 
 func (c *SongListController) DeleteSongList(ctx *gin.Context) {
 	idStr := ctx.Query("id")
-	// 将 int64 转换为 int8
-	id := utils.TransferToInt8(idStr)
+	// 将 int64 转换为 int
+	id, _ := strconv.Atoi(idStr)
 	response := c.songListService.DeleteSongList(id)
 	ctx.JSON(http.StatusOK, response)
 }

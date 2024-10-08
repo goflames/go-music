@@ -17,7 +17,7 @@ func NewConsumerDAO(db *gorm.DB) *ConsumerDAO {
 	}
 }
 
-func (dao *ConsumerDAO) GetUserById(id int8) (models.Consumer, error) {
+func (dao *ConsumerDAO) GetUserById(id int) (models.Consumer, error) {
 	var consumer models.Consumer
 	err := dao.db.First(&consumer, id).Error
 	return consumer, err
@@ -59,7 +59,7 @@ func (dao *ConsumerDAO) Update(consumer *models.Consumer) (int64, error) {
 	return tx.RowsAffected, tx.Error
 }
 
-func (dao *ConsumerDAO) DeleteById(userId int8) bool {
+func (dao *ConsumerDAO) DeleteById(userId int) bool {
 	tx := dao.db.Delete(&models.Consumer{}, userId)
 	return tx.RowsAffected > 0
 }
@@ -73,7 +73,7 @@ func (dao *ConsumerDAO) GetAllUser() []models.Consumer {
 	return users
 }
 
-func (dao *ConsumerDAO) UpdateUserImg(userId int8, pic string) common.Response {
+func (dao *ConsumerDAO) UpdateUserImg(userId int, pic string) common.Response {
 	log.Printf("进入用户头像更新数据库方法")
 	tx := dao.db.Model(&models.Consumer{}).Where("id = ?", userId).Update("avator", pic)
 	if tx.Error != nil || tx.RowsAffected < 1 {

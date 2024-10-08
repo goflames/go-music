@@ -6,10 +6,10 @@ import (
 	"gomusic_server/config"
 	"gomusic_server/dto"
 	service "gomusic_server/services"
-	"gomusic_server/utils"
 	"gorm.io/gorm"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type CommentController struct {
@@ -31,8 +31,8 @@ func CommentControllerRegister(router *gin.RouterGroup) {
 
 func (c *CommentController) CommentOfSongListId(ctx *gin.Context) {
 	songListIdStr := ctx.Query("songListId")
-	// 将 int64 转换为 int8
-	songListId := utils.TransferToInt8(songListIdStr)
+	// 将 int64 转换为 int
+	songListId, _ := strconv.Atoi(songListIdStr)
 	comments, err := c.commentService.CommentOfSongListId(songListId)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, common.Error("获取评论失败"))
@@ -43,8 +43,8 @@ func (c *CommentController) CommentOfSongListId(ctx *gin.Context) {
 
 func (c *CommentController) CommentOfSongId(ctx *gin.Context) {
 	songIdStr := ctx.Query("songId")
-	// 将 int64 转换为 int8
-	songId := utils.TransferToInt8(songIdStr)
+	// 将 int64 转换为 int
+	songId, _ := strconv.Atoi(songIdStr)
 	comments, err := c.commentService.CommentOfSongId(songId)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, common.Error("获取评论失败"))
@@ -89,8 +89,8 @@ func (c *CommentController) CommentOfLike(ctx *gin.Context) {
 
 func (c *CommentController) DeleteComment(ctx *gin.Context) {
 	idStr := ctx.Query("id")
-	// 将 int64 转换为 int8
-	id := utils.TransferToInt8(idStr)
+	// 将 int64 转换为 int
+	id, _ := strconv.Atoi(idStr)
 	response := c.commentService.DeleteComment(id)
 	ctx.JSON(http.StatusOK, response)
 }

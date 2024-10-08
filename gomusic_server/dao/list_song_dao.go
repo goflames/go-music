@@ -15,7 +15,7 @@ func NewListSongDAO(db *gorm.DB) *ListSongDAO {
 	return &ListSongDAO{db}
 }
 
-func (dao *ListSongDAO) GetSongsByListId(listId int8) ([]models.ListSong, error) {
+func (dao *ListSongDAO) GetSongsByListId(listId int) ([]models.ListSong, error) {
 	var listSong []models.ListSong
 	err := dao.db.Where("song_list_id = ?", listId).Find(&listSong).Error
 	return listSong, err
@@ -35,7 +35,7 @@ func (dao *ListSongDAO) AddListSong(listSong models.ListSong) common.Response {
 	return common.Success("添加成功！")
 }
 
-func (dao *ListSongDAO) DeleyeBySongId(songId int8) common.Response {
+func (dao *ListSongDAO) DeleyeBySongId(songId int) common.Response {
 	result := dao.db.Delete(&models.ListSong{}, songId)
 	if result.Error != nil && result.RowsAffected > 0 {
 		return common.Error("删除失败！")

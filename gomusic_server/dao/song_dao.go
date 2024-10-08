@@ -16,13 +16,13 @@ func NewSongDAO(db *gorm.DB) *SongDAO {
 	return &SongDAO{db}
 }
 
-func (dao *SongDAO) GetSongsBySingerId(singerId int8) ([]models.Song, error) {
+func (dao *SongDAO) GetSongsBySingerId(singerId int) ([]models.Song, error) {
 	var songs []models.Song
 	err := dao.db.Where("singer_id = ?", singerId).Find(&songs).Error
 	return songs, err
 }
 
-func (dao *SongDAO) GetSongsById(songId int8) (models.Song, error) {
+func (dao *SongDAO) GetSongsById(songId int) (models.Song, error) {
 	var song models.Song
 	err := dao.db.First(&song, songId).Error
 	return song, err
@@ -43,7 +43,7 @@ func (dao *SongDAO) GetAllSongs() ([]models.Song, error) {
 	return songs, nil
 }
 
-func (dao *SongDAO) UpdateSongImg(songId int8, pic string) common.Response {
+func (dao *SongDAO) UpdateSongImg(songId int, pic string) common.Response {
 	tx := dao.db.Model(&models.Song{}).Where("id = ?", songId).Update("pic", pic)
 	if tx.Error != nil || tx.RowsAffected < 1 {
 		log.Print("歌曲图片更新失败....")
@@ -60,7 +60,7 @@ func (dao *SongDAO) AddSong(song models.Song) common.Response {
 	return common.SuccessWithData("新增歌曲成功", song.URL)
 }
 
-func (dao *SongDAO) DeleteById(id int8) (string, bool) {
+func (dao *SongDAO) DeleteById(id int) (string, bool) {
 	song, err := dao.GetSongsById(id)
 	if err != nil {
 		return "", false

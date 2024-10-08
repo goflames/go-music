@@ -7,9 +7,9 @@ import (
 	"gomusic_server/dto"
 	"gomusic_server/models"
 	service "gomusic_server/services"
-	"gomusic_server/utils"
 	"gorm.io/gorm"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -44,8 +44,8 @@ func (c *SingerController) GetAllSingers(ctx *gin.Context) {
 
 func (c *SingerController) GetSingersByGerder(ctx *gin.Context) {
 	genderStr := ctx.Query("sex")
-	// 将 int64 转换为 int8
-	gender := utils.TransferToInt8(genderStr)
+	// 将 int64 转换为 int
+	gender, _ := strconv.Atoi(genderStr)
 
 	singers, err := c.singerService.GetSingersByGender(gender)
 	if err != nil {
@@ -71,8 +71,8 @@ func (c *SingerController) UpdateSingerInfo(ctx *gin.Context) {
 
 func (c *SingerController) UpdateSingerImg(ctx *gin.Context) {
 	idStr := ctx.Query("id")
-	// 将 int64 转换为 int8
-	id := utils.TransferToInt8(idStr)
+	// 将 int64 转换为 int
+	id, _ := strconv.Atoi(idStr)
 	file, err := ctx.FormFile("file")
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": "file is required"})
@@ -91,8 +91,8 @@ func (c *SingerController) UpdateSingerImg(ctx *gin.Context) {
 
 func (c *SingerController) DeleteSingerById(ctx *gin.Context) {
 	idStr := ctx.Query("id")
-	// 将 int64 转换为 int8
-	id := utils.TransferToInt8(idStr)
+	// 将 int64 转换为 int
+	id, _ := strconv.Atoi(idStr)
 
 	// todo：确认song表中是否还有该歌手的歌曲
 

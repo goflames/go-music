@@ -41,7 +41,7 @@ func (s *SongListService) AddSongList(request dto.SongListRequest) bool {
 	return true
 }
 
-func (s *SongListService) UpdateSongListImg(id int8, img string) common.Response {
+func (s *SongListService) UpdateSongListImg(id int, img string) common.Response {
 	return s.songListDAO.UpdateSongListImg(id, img)
 }
 
@@ -49,6 +49,6 @@ func (s *SongListService) UpdateSongListInfo(request dto.SongListRequest) common
 	return s.songListDAO.UpdateSongListInfo(request)
 }
 
-func (s *SongListService) DeleteSongList(id int8) common.Response {
+func (s *SongListService) DeleteSongList(id int) common.Response {
 	return s.songListDAO.DeleteSongList(id)
 }

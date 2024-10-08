@@ -12,6 +12,7 @@ import (
 	"gorm.io/gorm"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -38,8 +39,8 @@ func ConsumerControllerRegister(router *gin.RouterGroup) {
 
 func (c *ConsumerController) GetUserById(ctx *gin.Context) {
 	idStr := ctx.Query("id")
-	// 将 int64 转换为 int8
-	id := utils.TransferToInt8(idStr)
+	// 将 int64 转换为 int
+	id, _ := strconv.Atoi(idStr)
 	consumer, err := c.consumerService.GetUserById(id)
 	if err != nil {
 		ctx.JSON(http.StatusOK, common.Error("获取评论用户失败"))
@@ -133,7 +134,7 @@ func (c *ConsumerController) UpdatePassword(ctx *gin.Context) {
 		return
 	}
 
-	consumer, _ := c.consumerService.GetUserById(int8(request.Id))
+	consumer, _ := c.consumerService.GetUserById(int(request.Id))
 	checkPassword := utils.CheckPassword(strings.TrimSpace(consumer.Password), strings.TrimSpace(request.OldPassword))
 
 	if !checkPassword {
@@ -157,7 +158,7 @@ func (c *ConsumerController) UpdatePassword(ctx *gin.Context) {
 
 func (c *ConsumerController) DeleteById(ctx *gin.Context) {
 	userIdStr := ctx.Query("id")
-	userId := utils.TransferToInt8(userIdStr)
+	userId, _ := strconv.Atoi(userIdStr)
 
 	if c.consumerService.DeleteById(userId) {
 		ctx.JSON(http.StatusOK, common.Success("注销成功"))
@@ -174,8 +175,8 @@ func (c *ConsumerController) UpdateUserAvatar(ctx *gin.Context) {
 	logger.Info(map[string]interface{}{}, "--------用户头像更新请求--------")
 	log.Print("--------用户头像更新请求--------")
 	idStr := ctx.Query("id")
-	// 将 int64 转换为 int8
-	id := utils.TransferToInt8(idStr)
+	// 将 int64 转换为 int
+	id, _ := strconv.Atoi(idStr)
 	file, err := ctx.FormFile("file")
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": "file is required"})

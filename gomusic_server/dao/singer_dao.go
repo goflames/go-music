@@ -25,7 +25,7 @@ func (dao *SingerDAO) GetAllSingers() ([]models.Singer, error) {
 	return singers, err
 }
 
-func (dao *SingerDAO) GetSingersByGender(gender int8) ([]models.Singer, error) {
+func (dao *SingerDAO) GetSingersByGender(gender int) ([]models.Singer, error) {
 	var singers []models.Singer
 	err := dao.Db.Where("sex = ?", gender).Find(&singers).Error
 	return singers, err
@@ -47,7 +47,7 @@ func (dao *SingerDAO) UpdateSingerInfo(request dto.SingerRequest) error {
 	return db.Save(&singer).Omit("pic").Error
 }
 
-func (dao *SingerDAO) UpdateSingerImg(singerId int8, pic string) common.Response {
+func (dao *SingerDAO) UpdateSingerImg(singerId int, pic string) common.Response {
 	tx := dao.Db.Model(&models.Singer{}).Where("id = ?", singerId).Update("pic", pic)
 	if tx.Error != nil {
 		return common.Error("数据库更新歌手图片失败")
@@ -55,7 +55,7 @@ func (dao *SingerDAO) UpdateSingerImg(singerId int8, pic string) common.Response
 	return common.SuccessWithData("更新成功", pic)
 }
 
-func (dao *SingerDAO) DeleteSingerById(singerId int8) common.Response {
+func (dao *SingerDAO) DeleteSingerById(singerId int) common.Response {
 	tx := dao.Db.Delete(&models.Singer{}, singerId)
 	if tx.Error != nil || tx.RowsAffected < 1 {
 		return common.Error("删除歌手失败...")

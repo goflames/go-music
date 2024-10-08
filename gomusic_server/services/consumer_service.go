@@ -18,7 +18,7 @@ func NewConsumerService(db *gorm.DB) *ConsumerService {
 	return &ConsumerService{dao.NewConsumerDAO(db)}
 }
 
-func (s *ConsumerService) GetUserById(id int8) (models.Consumer, error) {
+func (s *ConsumerService) GetUserById(id int) (models.Consumer, error) {
 	consumer, err := s.consumerDAO.GetUserById(id)
 	return consumer, err
 }
@@ -96,7 +96,7 @@ func (s *ConsumerService) AddUser(registryRequest *dto.ConsumerRequest) (common.
 }
 
 func (s *ConsumerService) UpdateUser(updateRequest dto.ConsumerRequest) (common.Response, error) {
-	oldinfo, _ := s.consumerDAO.GetUserById(int8(updateRequest.Id))
+	oldinfo, _ := s.consumerDAO.GetUserById(int(updateRequest.Id))
 	if oldinfo.Username != updateRequest.Username {
 		existingUser, err := s.consumerDAO.GetUserByUsername(updateRequest.Username)
 		if err != nil {
@@ -130,7 +130,7 @@ func (s *ConsumerService) UpdatePassword(consumer models.Consumer) (int64, error
 	return count, err
 }
 
-func (s *ConsumerService) DeleteById(userId int8) bool {
+func (s *ConsumerService) DeleteById(userId int) bool {
 	return s.consumerDAO.DeleteById(userId)
 }
 
@@ -138,6 +138,6 @@ func (s *ConsumerService) GetAllUser() []models.Consumer {
 	return s.consumerDAO.GetAllUser()
 }
 
-func (s *ConsumerService) UpdateUserImg(userId int8, pic string) common.Response {
+func (s *ConsumerService) UpdateUserImg(userId int, pic string) common.Response {
 	return s.consumerDAO.UpdateUserImg(userId, pic)
 }

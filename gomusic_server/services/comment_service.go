@@ -16,12 +16,12 @@ func NewCommentService(db *gorm.DB) *CommentService {
 	return &CommentService{commentDAO: dao.NewCommentDAO(db)}
 }
 
-func (s *CommentService) CommentOfSongListId(songListId int8) ([]models.Comment, error) {
+func (s *CommentService) CommentOfSongListId(songListId int) ([]models.Comment, error) {
 	comments, err := s.commentDAO.CommentOfSongListId(songListId)
 	return comments, err
 }
 
-func (s *CommentService) CommentOfSongId(songId int8) ([]models.Comment, error) {
+func (s *CommentService) CommentOfSongId(songId int) ([]models.Comment, error) {
 	comments, err := s.commentDAO.CommentOfSongId(songId)
 	return comments, err
 }
@@ -41,6 +41,6 @@ func (s *CommentService) UpdateCommentMsg(commentRequest dto.CommentRequest) com
 	return common.Success("点赞成功")
 }
 
-func (s *CommentService) DeleteComment(id int8) common.Response {
+func (s *CommentService) DeleteComment(id int) common.Response {
 	return s.commentDAO.DeleteComment(id)
 }

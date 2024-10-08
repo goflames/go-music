@@ -15,12 +15,12 @@ func NewSongService(db *gorm.DB) *SongService {
 	return &SongService{dao.NewSongDAO(db)}
 }
 
-func (s *SongService) GetSongsBySingerId(singerId int8) ([]models.Song, error) {
+func (s *SongService) GetSongsBySingerId(singerId int) ([]models.Song, error) {
 	songs, err := s.songDao.GetSongsBySingerId(singerId)
 	return songs, err
 }
 
-func (s *SongService) GetSongsById(songId int8) (models.Song, error) {
+func (s *SongService) GetSongsById(songId int) (models.Song, error) {
 	song, err := s.songDao.GetSongsById(songId)
 	return song, err
 }
@@ -37,7 +37,7 @@ func (s *SongService) GetAllSongs() []models.Song {
 	return songs
 }
 
-func (s *SongService) UpdateSongImg(songId int8, pic string) common.Response {
+func (s *SongService) UpdateSongImg(songId int, pic string) common.Response {
 	return s.songDao.UpdateSongImg(songId, pic)
 }
 
@@ -45,7 +45,7 @@ func (s *SongService) AddSong(song models.Song) common.Response {
 	return s.songDao.AddSong(song)
 }
 
-func (s *SongService) DeleteById(id int8) (string, bool) {
+func (s *SongService) DeleteById(id int) (string, bool) {
 	return s.songDao.DeleteById(id)
 }
 

@@ -13,7 +13,7 @@ func NewRankListDAO(db *gorm.DB) *RankListDAO {
 	return &RankListDAO{Db: db}
 }
 
-func (dao *RankListDAO) RankOfSongListId(songListId int8) (int64, float64, error) {
+func (dao *RankListDAO) RankOfSongListId(songListId int) (int64, float64, error) {
 	var count int64
 	var totalScore float64
 
@@ -37,7 +37,7 @@ func (dao *RankListDAO) RankOfSongListId(songListId int8) (int64, float64, error
 	return count, totalScore, nil
 }
 
-func (dao *RankListDAO) GetUserRank(consumerId int8, songlistId int8) (uint32, error) {
+func (dao *RankListDAO) GetUserRank(consumerId int, songlistId int) (uint32, error) {
 	var rankList models.RankList
 	err := dao.Db.Where("consumer_id = ? and song_list_id = ?", consumerId, songlistId).Find(&rankList).Error
 	return rankList.Score, err

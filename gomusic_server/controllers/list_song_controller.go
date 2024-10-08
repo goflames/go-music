@@ -8,7 +8,6 @@ import (
 	"gomusic_server/dto"
 	"gomusic_server/models"
 	service "gomusic_server/services"
-	"gomusic_server/utils"
 	"gorm.io/gorm"
 	"net/http"
 	"strconv"
@@ -31,7 +30,7 @@ func ListSongControllerRegister(router *gin.RouterGroup) {
 
 func (c *ListSongController) GetSongsByListId(ctx *gin.Context) {
 	listIdStr := ctx.Query("songListId")
-	listId := utils.TransferToInt8(listIdStr)
+	listId, _ := strconv.Atoi(listIdStr)
 	listSongs, err := c.listSongService.GetSongsByListId(listId)
 	if err != nil {
 		ctx.JSON(http.StatusOK, common.Error("获取歌单歌曲列表失败"))
@@ -60,7 +59,7 @@ func (c *ListSongController) AddListSong(ctx *gin.Context) {
 
 func (c *ListSongController) DeleyeBySongId(ctx *gin.Context) {
 	songIdStr := ctx.Query("songListId")
-	songId := utils.TransferToInt8(songIdStr)
+	songId, _ := strconv.Atoi(songIdStr)
 	response := c.listSongService.DeleyeBySongId(songId)
 	ctx.JSON(http.StatusOK, response)
 
