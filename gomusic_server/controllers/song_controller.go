@@ -5,9 +5,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"gomusic_server/common"
 	"gomusic_server/config"
+	"gomusic_server/dto"
 	"gomusic_server/models"
 	service "gomusic_server/services"
 	"gorm.io/gorm"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -30,6 +32,8 @@ func SongControllerRegister(router *gin.RouterGroup) {
 	router.GET("/singerName/detail", songController.GetSongBySingerName)
 	router.POST("/img/update", songController.UpdateSongImg)
 	router.POST("/add", songController.AddSong)
+	router.POST("/update", songController.UpdateSongInfo)
+	router.POST("/lrc/update", songController.LrcUpdate)
 	router.DELETE("/delete", songController.DeleteById)
 }
 
@@ -164,4 +168,54 @@ func (c *SongController) DeleteById(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, common.Success("删除成功！"))
+}
+
+func (c *SongController) LrcUpdate(ctx *gin.Context) {
+	idStr := ctx.Query("id")
+	// 将 int64 转换为 int
+	log.Print("idStr:" + idStr)
+	id, _ := strconv.Atoi(idStr)
+	lrcFile, err := ctx.FormFile("lrcFile")
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, common.Error("文件上传失败"))
+		return
+	}
+
+	// 读取文件内容
+	file, err := lrcFile.Open()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, common.Error("无法打开文件"))
+		return
+	}
+	defer file.Close()
+
+	fileContent, err := ioutil.ReadAll(file)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, common.Error("读取文件失败"))
+		return
+	}
+
+	message, err := c.songService.UpdateSongLrc(fileContent, id)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, common.Error(message))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, common.Success(message))
+}
+
+func (c *SongController) UpdateSongInfo(ctx *gin.Context) {
+	var request dto.SongRequest
+	if err := ctx.ShouldBindJSON(&request); err != nil {
+		ctx.JSON(http.StatusBadRequest, common.Error("请求参数错误"))
+		return
+	}
+
+	err := c.songService.UpdateSongInfo(request)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, common.Error("更新信息失败"))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, common.Success("更新信息成功"))
 }

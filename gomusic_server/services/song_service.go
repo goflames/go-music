@@ -3,6 +3,7 @@ package service
 import (
 	"gomusic_server/common"
 	"gomusic_server/dao"
+	"gomusic_server/dto"
 	"gomusic_server/models"
 	"gorm.io/gorm"
 )
@@ -52,4 +53,27 @@ func (s *SongService) DeleteById(id int) (string, bool) {
 func (s *SongService) GetSongsByName(songName string) (models.Song, error) {
 	song, err := s.songDao.GetSongsByName(songName)
 	return song, err
+}
+
+func (s *SongService) UpdateSongInfo(request dto.SongRequest) error {
+	return s.songDao.UpdateSongInfo(request)
+}
+
+func (s *SongService) UpdateSongLrc(lrcFile []byte, id int) (string, error) {
+	song, err := s.songDao.GetSongByID(id)
+	if err != nil {
+		return "获取歌曲失败", err
+	}
+
+	if lrcFile != nil && song.Lyric != "[00:00:00]暂无歌词" {
+		// 这里假设 lrcFile 是 []byte 类型，直接将其转换为字符串
+		content := string(lrcFile) // 将字节数组转换为字符串
+		song.Lyric = content
+	}
+
+	if err := s.songDao.UpdateSongLrc(song); err != nil {
+		return "更新失败", err
+	}
+
+	return "更新成功", nil
 }

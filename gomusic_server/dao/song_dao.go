@@ -2,10 +2,12 @@ package dao
 
 import (
 	"gomusic_server/common"
+	"gomusic_server/dto"
 	"gomusic_server/models"
 	"gorm.io/gorm"
 	"log"
 	"strings"
+	"time"
 )
 
 type SongDAO struct {
@@ -84,4 +86,31 @@ func (dao *SongDAO) GetSongsByName(songName string) (models.Song, error) {
 	var song models.Song
 	tx := dao.db.Where("name = ?", songName).Find(&song)
 	return song, tx.Error
+}
+
+func (dao *SongDAO) UpdateSongInfo(request dto.SongRequest) error {
+	var song models.Song
+	db := dao.db.First(&song, request.ID)
+	if db.Error != nil {
+		return db.Error
+	}
+
+	song.Name = request.Name
+	song.Introduction = request.Introduction
+	song.Lyric = request.Lyric
+	song.UpdateTime = time.Now()
+
+	return dao.db.Save(&song).Error
+}
+
+func (dao *SongDAO) UpdateSongLrc(song models.Song) error {
+	return dao.db.Save(&song).Error
+}
+
+func (dao *SongDAO) GetSongByID(id int) (models.Song, error) {
+	var song models.Song
+	if err := dao.db.First(&song, id).Error; err != nil {
+		return song, err
+	}
+	return song, nil
 }

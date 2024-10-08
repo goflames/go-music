@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"errors"
 	"github.com/gin-gonic/gin"
 	"gomusic_server/common"
 	"gomusic_server/config"
@@ -47,8 +46,7 @@ func (c *ListSongController) AddListSong(ctx *gin.Context) {
 		return
 	}
 
-	//songId, _ := StringToUint(request.SongID)
-	songListId, _ := StringToUint(request.SongListID)
+	songListId, _ := strconv.Atoi(request.SongListID)
 
 	var listSong models.ListSong
 	listSong.SongID = request.SongID
@@ -63,16 +61,4 @@ func (c *ListSongController) DeleyeBySongId(ctx *gin.Context) {
 	response := c.listSongService.DeleyeBySongId(songId)
 	ctx.JSON(http.StatusOK, response)
 
-}
-
-// StringToUint 封装的将字符串转换为 uint 的方法
-func StringToUint(s string) (uint, error) {
-	// 将字符串解析为 uint64
-	num, err := strconv.ParseUint(s, 10, 64)
-	if err != nil {
-		return 0, errors.New("转换错误: " + err.Error())
-	}
-
-	// 将 uint64 转换为 uint 类型
-	return uint(num), nil
 }
