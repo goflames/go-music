@@ -23,15 +23,36 @@ export default defineComponent({
       togglePlay();
     });
 
-    // 开始/暂停
+    // // 开始/暂停
+    // function togglePlay() {
+    //   isPlay.value ? divRef.value.play() : divRef.value.pause();
+    // }
     function togglePlay() {
-      isPlay.value ? divRef.value.play() : divRef.value.pause();
+  if (divRef.value) {
+    if (isPlay.value) {
+      // 确保用户交互后再播放
+      divRef.value.play().catch(error => {
+        console.error('播放失败:', error);
+      });
+    } else {
+      divRef.value.pause();
     }
+  }
+}
 
     // 获取歌曲链接后准备播放
+    // function startPlay() {
+    //   divRef.value.play();
+    // }
     function startPlay() {
-      divRef.value.play();
-    }
+  if (divRef.value) {
+    // 确保用户交互后再播放
+    divRef.value.play().catch(error => {
+      console.error('播放失败:', error);
+    });
+  }
+}
+
     // 音乐播放结束时触发
     function ended() {
       proxy.$store.commit("setIsPlay", false);
