@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+	emailverifier "github.com/AfterShip/email-verifier"
 	"gomusic_server/common"
 	"gomusic_server/dao"
 	"gomusic_server/dto"
@@ -86,6 +88,18 @@ func (s *ConsumerService) AddUser(registryRequest *dto.ConsumerRequest) (common.
 		}
 	}
 
+	verifier := emailverifier.NewVerifier()
+	ret, err := verifier.Verify(registryRequest.Email)
+	if err != nil {
+		fmt.Println("verify email address failed, error is: ", err)
+		return common.Fatal("未知错误"), nil
+	}
+	if !ret.Syntax.Valid {
+		fmt.Println("email address syntax is invalid")
+		return common.Fatal("请输入正确的有效邮箱地址！"), nil
+	}
+
+	fmt.Println("email validation result", ret)
 	// 插入用户
 	create, err := s.consumerDAO.Create(consumer)
 	if create == nil {
