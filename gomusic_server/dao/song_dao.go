@@ -67,9 +67,28 @@ func (dao *SongDAO) DeleteById(id int) (string, bool) {
 	if err != nil {
 		return "", false
 	}
-	tx := dao.db.Delete(&song)
+	// 开启事务
+	tx := dao.db.Begin()
+
+	// 尝试删除 song 表中的记录
+	if err := tx.Delete(&song).Error; err != nil {
+		tx.Rollback() // 如果失败，回滚事务
+		return "删除歌曲失败", false
+	}
+
+	// 尝试删除 list_song 表中 song_id 为 id 的记录
+	if err := tx.Where("song_id = ?", id).Delete(&models.ListSong{}).Error; err != nil {
+		tx.Rollback() // 如果失败，回滚事务
+		return "删除歌单歌曲失败", false
+	}
+
+	// 提交事务
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return "事务提交失败", false
+	}
 	if tx.Error == nil && tx.RowsAffected < 1 {
-		return "", false
+		return "未有数据被删除", false
 	}
 	// 找到第一个 '/' 的位置
 	firstIndex := strings.Index(song.URL, "/")
