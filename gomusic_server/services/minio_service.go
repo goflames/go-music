@@ -73,6 +73,7 @@ func UploadFileWithPrefix(file *multipart.FileHeader, bucketName string, prefix 
 
 // RemoveFile removes a file from MinIO
 func RemoveFile(objectName string, bucketName string) error {
+	log.Print("进入Minio删除文件方法")
 	err := config.MinioClient.RemoveObject(
 		context.Background(),
 		bucketName,
@@ -80,6 +81,7 @@ func RemoveFile(objectName string, bucketName string) error {
 		minio.RemoveObjectOptions{},
 	)
 	if err != nil {
+		log.Print("Minio移除文件失败！")
 		return fmt.Errorf("failed to remove file: %v", err)
 	}
 

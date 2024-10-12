@@ -163,13 +163,14 @@ func (c *SongController) DeleteById(ctx *gin.Context) {
 	if isDeleted {
 		err := service.RemoveFile(objectName, bucketName)
 		if err != nil {
-			ctx.JSON(http.StatusOK, common.Error("删除歌曲文件失败！"))
-		} else {
-			ctx.JSON(http.StatusOK, common.Success("删除成功！"))
+			log.Print("Minio文件删除失败")
+			//ctx.JSON(http.StatusOK, common.Error("删除歌曲文件失败！"))
 		}
+		ctx.JSON(http.StatusOK, common.Success("删除成功！"))
 		return
 	}
-	ctx.JSON(http.StatusOK, common.Success("未知错误，删除失败！"))
+	ctx.JSON(http.StatusOK, common.Error("删除失败！"))
+
 }
 
 func (c *SongController) LrcUpdate(ctx *gin.Context) {
