@@ -160,6 +160,7 @@ func (c *SongController) DeleteById(ctx *gin.Context) {
 	idStr := ctx.Query("id")
 	id, _ := strconv.Atoi(idStr)
 	objectName, isDeleted := c.songService.DeleteById(id)
+	log.Print("是否删除成功：", isDeleted)
 	if isDeleted {
 		err := service.RemoveFile(objectName, bucketName)
 		if err != nil {
@@ -167,10 +168,9 @@ func (c *SongController) DeleteById(ctx *gin.Context) {
 			//ctx.JSON(http.StatusOK, common.Error("删除歌曲文件失败！"))
 		}
 		ctx.JSON(http.StatusOK, common.Success("删除成功！"))
-		return
+	} else {
+		ctx.JSON(http.StatusOK, common.Error("删除失败！"))
 	}
-	ctx.JSON(http.StatusOK, common.Error("删除失败！"))
-
 }
 
 func (c *SongController) LrcUpdate(ctx *gin.Context) {
